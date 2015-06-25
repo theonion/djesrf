@@ -81,9 +81,22 @@ class AggregateableModelViewSet(SearchableModelViewSet):
 
         results = self.model.get_aggregates(query, params)
 
-        page = self.paginate_queryset(results)
-        if page:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(results, many=True)
-        return Response(serializer.data)
+        response = {
+            "count": len(results),
+            "next": None,
+            "previous": None,
+            "results": [],
+        }
+
+        for path, obj in results.items():
+            name = path.split(".")[0].title()
+            path = path.replace(".", "__")
+            result = {
+                "name": name,
+                "path": path,
+                "aggregates": [],
+            }
+            for value, count in obj.items():
+                result["aggregates"].append({"value": value, "count": count})
+            response["results"].append(result)
+        return Response(response)
