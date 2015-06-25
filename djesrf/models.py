@@ -8,6 +8,9 @@ class Searchable(Indexable):
     """adds a `.search` class method to the model
     """
 
+    class Meta(object):
+        abstract = True
+
     @staticmethod
     def _handle_status_filter(status):
         """builds a filter around the `published` field based on a given status
@@ -109,6 +112,9 @@ class Searchable(Indexable):
 class Aggregateable(Searchable):
     """extends the Searchable model type by adding a `.get_aggregates` class method to the model
     """
+
+    class Meta(object):
+        abstract = True
 
     class Aggregates(object):
         """this is where you need to load up your aggregates
