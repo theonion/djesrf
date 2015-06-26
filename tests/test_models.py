@@ -41,9 +41,7 @@ def test_searchable_ordered_search():
     results = Channel.search(ordering=["-name", ])
     current_result = results[0]
     for result in results[1:]:
-        print(current_result.name)
-        print(result.name)
-        assert current_result.name.lower() > result.name.lower()
+        assert current_result.name.lower() >= result.name.lower()
         current_result = result
 
 
@@ -64,9 +62,7 @@ def test_searchable_complete_search():
     current_result = results[0]
     assert current_result.name == video.name
     for result in results[1:]:
-        print(current_result.name)
-        print(result.name)
-        assert current_result.name.lower() > result.name.lower()
+        assert current_result.name.lower() >= result.name.lower()
         current_result = result
 
 

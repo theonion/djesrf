@@ -27,6 +27,5 @@ def test_aggregateable(client):
     _ = mommy.make(Video, channel=c3)
     response = client.get("/api/videos/aggregates/")
     results = json.loads(response.content.decode("utf8"))
-    print(results)
     assert len(results["results"]) == 1
     assert len(results["results"][0]["aggregates"])
