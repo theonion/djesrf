@@ -1,3 +1,4 @@
+ROOT_URLCONF = "example.app.urls"
 
 DATABASES = {
     "default": {
