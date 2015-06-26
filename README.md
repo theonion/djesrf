@@ -3,7 +3,7 @@
 [djes](https://github.com/theonion/djes) + [drf](https://github.com/tomchristie/django-rest-framework) = one legit api
 
 
-## To get started:
+## Run the Tests:
 
 ```bash
 $ pip install -e .
