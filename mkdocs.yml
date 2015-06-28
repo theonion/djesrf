@@ -1,0 +1,6 @@
+site_name: djesrf
+pages:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - License: license.md
+theme: readthedocs

@@ -25,7 +25,8 @@ dev_requires = [
     "pytest-cov",
     "model_mommy",
     "coveralls",
-    "drf-nested-serializers"
+    "drf-nested-serializers",
+    "mkdocs",
 ]
 
 install_requires = [
