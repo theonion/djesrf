@@ -21,7 +21,7 @@ class SearchableModelViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # get params
-        params = deepcopy(request.QUERY_PARAMS)
+        params = deepcopy(request.query_params)
 
         if "search" in params:
             query = params["search"]
@@ -30,7 +30,7 @@ class SearchableModelViewSet(viewsets.ModelViewSet):
             query = None
 
         if "ordering" in params:
-            ordering = params["ordering"]
+            ordering = params.getlist("ordering")
             del params["ordering"]
         else:
             ordering = None
