@@ -74,6 +74,25 @@ class Searchable(Indexable):
         return f
 
     @classmethod
+    def _build_ordering(cls, ordering):
+        """builds the ordering list and properly converts dunders to dots for nested fields
+
+        :param ordering: field names used to order the results
+        :type ordering: list
+
+        :return: a proper list of field names
+        :rtype: list
+        """
+        if isinstance(ordering, str):
+            ordering = [ordering, ]
+
+        formatted = []
+        for order in ordering:
+            formatted.append(order.lower().replace("__", "."))
+
+        return formatted
+
+    @classmethod
     def search(cls, query=None, filters=None, ordering=None):
         """performs a query using the model's `.search_objects` manager
 
@@ -103,6 +122,7 @@ class Searchable(Indexable):
 
         # add ordering if exists
         if ordering:
+            ordering = cls._build_ordering(ordering)
             qs = qs.sort(*ordering)
 
         # done
