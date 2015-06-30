@@ -236,9 +236,13 @@ class Aggregateable(Searchable):
         # parse
         aggregates = {}
         for index, field in enumerate(fields):
+            dunder_field = field.lower().replace(".", "__")
+            if filters:
+                if dunder_field in filters:
+                    continue
             bucket = buckets[index]
             parsed_aggregates = dict([(b["key"], b["doc_count"]) for b in raw_aggregates[bucket][bucket]["buckets"]])
-            aggregates[field] = parsed_aggregates
+            aggregates[dunder_field] = parsed_aggregates
 
         # done
         return aggregates

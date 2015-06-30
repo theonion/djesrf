@@ -85,8 +85,8 @@ def test_aggregateable_get_aggregates_simple():
     _ = mommy.make(Channel, _quantity=3)
     results = Video.get_aggregates()
     assert len(results) == 1
-    assert "channel.name.raw" in results
-    assert len(results["channel.name.raw"]) == 3
+    assert "channel__name__raw" in results
+    assert len(results["channel__name__raw"]) == 3
 
 
 @pytest.mark.django_db
@@ -99,7 +99,7 @@ def test_aggregateable_get_aggregates_with_query():
     _ = mommy.make(Video, channel=avc, _quantity=5)
     results = Video.get_aggregates(query="test video")
     assert results == {
-        "channel.name.raw": {
+        "channel__name__raw": {
             "The Onion": 1
         }
     }
@@ -114,7 +114,7 @@ def test_aggregateable_get_aggregates_with_filters():
     _ = mommy.make(Video, channel=onion, _quantity=5)
     _ = mommy.make(Video, channel=avc, _quantity=5)
     results = Video.get_aggregates(filters={"channel__name__raw": "barf"})
-    assert results == {"channel.name.raw": {}}
+    assert results == {}
 
 
 @pytest.mark.django_db
@@ -131,9 +131,4 @@ def test_aggregateable_get_aggregates_complete():
         query="looped",
         filters={"channel__name__raw": onion.name}
     )
-    assert len(results) == 1
-    assert results == {
-        "channel.name.raw": {
-            "The Onion": 10
-        }
-    }
+    assert len(results) == 0
