@@ -3,6 +3,7 @@ import json
 from django.core import management
 from model_mommy import mommy
 import pytest
+from six import string_types
 
 from example.app.models import Channel, Video
 
@@ -25,8 +26,8 @@ def test_searchable_result_keys(client):
     response = Response(response)
     assert response.status == 200
     assert response.count is not None
-    assert response.next is None or isinstance(response.next, str)
-    assert response.previous is None or isinstance(response.previous, str)
+    assert response.next is None or isinstance(response.next, string_types)
+    assert response.previous is None or isinstance(response.previous, string_types)
     assert isinstance(response.results, list)
 
 
@@ -74,8 +75,8 @@ def test_aggregateable_result_keys(client):
     response = Response(response)
     assert response.status == 200
     assert response.count is not None
-    assert response.next is None or isinstance(response.next, str)
-    assert response.previous is None or isinstance(response.previous, str)
+    assert response.next is None or isinstance(response.next, string_types)
+    assert response.previous is None or isinstance(response.previous, string_types)
     assert isinstance(response.results, list)
 
 
