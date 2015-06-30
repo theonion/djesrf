@@ -36,8 +36,7 @@ def test_searchable_filtered_search():
 @pytest.mark.django_db
 def test_searchable_ordered_search():
     management.call_command("sync_es")
-    for index in range(10):
-        _ = mommy.make(Channel)
+    _ = mommy.make(Channel, _quantity=10)
     results = Channel.search(ordering=["-name", ])
     current_result = results[0]
     for result in results[1:]:

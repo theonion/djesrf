@@ -87,8 +87,9 @@ class Searchable(Indexable):
             ordering = [ordering, ]
 
         formatted = []
-        for order in ordering:
-            formatted.append(order.lower().replace("__", "."))
+        for key in ordering:
+            nested_key = key.lower().replace("__", ".")
+            formatted.append(nested_key)
 
         return formatted
 
