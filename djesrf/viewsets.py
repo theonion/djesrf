@@ -89,7 +89,7 @@ class AggregateableModelViewSet(SearchableModelViewSet):
         }
 
         for path, obj in results.items():
-            name = path.split(".")[0].title()
+            name = path.split("__")[0].title()
             path = path.replace(".", "__")
             result = {
                 "name": name,
