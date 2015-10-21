@@ -1,7 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
-from elasticsearch_dsl import field
 
+from elasticsearch_dsl import field
 from djesrf.models import Searchable, Aggregateable
 
 
