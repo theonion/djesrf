@@ -6,6 +6,7 @@ python:
 services:
   - elasticsearch
 install:
+    # see https://github.com/travis-ci/travis-ci/issues/4866
   - pip install 'coverage<4'
   - travis_retry pip install -e .
   - travis_retry pip install file://$(pwd)#egg=djesrf[dev]
