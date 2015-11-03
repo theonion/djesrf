@@ -1,5 +1,8 @@
 from django.core import management
+from django.utils import timezone
+
 import pytest
+from elasticsearch_dsl.connections import connections
 from model_mommy import mommy
 
 from example.app.models import Channel, Video
@@ -29,6 +32,7 @@ def test_searchable_filtered_search():
     avc = mommy.make(Channel, name="The A.V. Club")
     _ = mommy.make(Video, channel=onion, _quantity=20)
     _ = mommy.make(Video, channel=avc, _quantity=10)
+    Video.search_objects.refresh()
     results = Video.search(filters={"channel__name__raw": onion.name})
     assert len(results) == 20
 
@@ -66,6 +70,31 @@ def test_searchable_complete_search():
 
 
 @pytest.mark.django_db
+def test_searchable_delete_object_es(client):
+    management.call_command("sync_es")
+    es = connections.get_connection('default')
+    onion = mommy.make(Channel, name="The Onion")
+    index = Channel.search_objects.mapping.index
+    doc_type = Channel.search_objects.mapping.doc_type
+    channel_id_query = {
+        "query": {
+            "ids": {
+                "values": [onion.id]
+            }
+        }
+    }
+    Channel.search_objects.refresh()
+    results = es.search(index=index, doc_type=doc_type, body=channel_id_query)
+    hits = results['hits']['hits']
+    assert len(hits) == 1
+    onion.delete()
+    Channel.search_objects.refresh()
+    results = es.search(index=index, doc_type=doc_type, body=channel_id_query)
+    hits = results['hits']['hits']
+    assert len(hits) == 0
+
+
+@pytest.mark.django_db
 def test_aggregateable_has_search():
     management.call_command("sync_es")
     video = mommy.make(Video)
@@ -97,6 +126,7 @@ def test_aggregateable_get_aggregates_with_query():
     _ = mommy.make(Video, channel=onion, name="Another Test Video")
     _ = mommy.make(Video, channel=onion, _quantity=5)
     _ = mommy.make(Video, channel=avc, _quantity=5)
+    Video.search_objects.refresh()
     results = Video.get_aggregates(query="test video")
     assert results == {
         "channel__name__raw": {
@@ -132,3 +162,29 @@ def test_aggregateable_get_aggregates_complete():
         filters={"channel__name__raw": onion.name}
     )
     assert len(results) == 0
+
+
+@pytest.mark.django_db
+def test_aggregateable_delete_object_es(client):
+    management.call_command("sync_es")
+    es = connections.get_connection('default')
+    onion = mommy.make(Channel, name="The Onion")
+    video = mommy.make(Video, published=timezone.now(), channel=onion, _quantity=1)
+    index = Video.search_objects.mapping.index
+    doc_type = Video.search_objects.mapping.doc_type
+    video_id_query = {
+        "query": {
+            "ids": {
+                "values": [video[0].id]
+            }
+        }
+    }
+    Video.search_objects.refresh()
+    results = es.search(index=index, doc_type=doc_type, body=video_id_query)
+    hits = results['hits']['hits']
+    assert len(hits) == 1
+    video[0].delete()
+    Video.search_objects.refresh()
+    results = es.search(index=index, doc_type=doc_type, body=video_id_query)
+    hits = results['hits']['hits']
+    assert len(hits) == 0

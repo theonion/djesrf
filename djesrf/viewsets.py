@@ -62,7 +62,7 @@ class AggregateableModelViewSet(SearchableModelViewSet):
     @list_route(methods=["get"])
     def aggregates(self, request):
         # get params
-        params = deepcopy(request.QUERY_PARAMS)
+        params = deepcopy(request.query_params)
 
         if "search" in params:
             query = params["search"]
