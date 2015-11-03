@@ -31,7 +31,7 @@ dev_requires = [
 
 install_requires = [
     "djes",
-    "djangorestframework",
+    "djangorestframework==3.1.3",
 ]
 
 server_requires = []
