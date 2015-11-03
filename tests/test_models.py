@@ -32,6 +32,7 @@ def test_searchable_filtered_search():
     avc = mommy.make(Channel, name="The A.V. Club")
     _ = mommy.make(Video, channel=onion, _quantity=20)
     _ = mommy.make(Video, channel=avc, _quantity=10)
+    Video.search_objects.refresh()
     results = Video.search(filters={"channel__name__raw": onion.name})
     assert len(results) == 20
 
@@ -91,6 +92,7 @@ def test_searchable_delete_object_es(client):
     results = es.search(index=index, doc_type=doc_type, body=channel_id_query)
     hits = results['hits']['hits']
     assert len(hits) == 0
+
 
 @pytest.mark.django_db
 def test_aggregateable_has_search():
