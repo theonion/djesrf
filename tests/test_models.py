@@ -126,6 +126,7 @@ def test_aggregateable_get_aggregates_with_query():
     _ = mommy.make(Video, channel=onion, name="Another Test Video")
     _ = mommy.make(Video, channel=onion, _quantity=5)
     _ = mommy.make(Video, channel=avc, _quantity=5)
+    Video.search_objects.refresh()
     results = Video.get_aggregates(query="test video")
     assert results == {
         "channel__name__raw": {
